@@ -72,6 +72,18 @@ func (c *Client) do(method string, path string, body interface{}) (*http.Respons
 	return c.client.Do(req)
 }
 
+func (c *Client) doRequest(req MailchimpRequest) (*http.Response, error) {
+	return c.do(
+		req.Method,
+		req.Path,
+		req.Body,
+	)
+}
+
+func (c *Client) ExecuteBatchOperation(b BatchOperation) (*http.Response, error) {
+	return c.do("POST", "/batches", b.Requests)
+}
+
 func extractError(data []byte) (*ErrorResponse, error) {
 	errorResponse := new(ErrorResponse)
 	if err := json.Unmarshal(data, errorResponse); err != nil {

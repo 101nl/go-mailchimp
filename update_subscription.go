@@ -11,19 +11,17 @@ import (
 
 // UpdateSubscription ...
 func (c *Client) UpdateSubscription(listID string, email string, mergeFields map[string]interface{}) (*MemberResponse, error) {
-	// Hash email
-	emailMD5 := fmt.Sprintf("%x", md5.Sum([]byte(email)))
-	// Make request
-	params := map[string]interface{}{
-		"email_address": email,
-		"status":        status.Subscribed,
-		"merge_fields":  mergeFields,
-	}
-	resp, err := c.do(
-		"PUT",
-		fmt.Sprintf("/lists/%s/members/%s", listID, emailMD5),
-		&params,
-	)
+
+	request := c.GetUpdateSubscriptionRequest(listID, email, mergeFields)
+
+	//resp, err := c.do(
+	//	"PUT",
+	//	fmt.Sprintf("/lists/%s/members/%s", listID, emailMD5),
+	//	&params,
+	//)
+
+	resp, err := c.doRequest(request)
+
 	if err != nil {
 		return nil, err
 	}
@@ -51,4 +49,21 @@ func (c *Client) UpdateSubscription(listID string, email string, mergeFields map
 		return nil, err
 	}
 	return nil, errorResponse
+}
+
+func (c *Client) GetUpdateSubscriptionRequest(listID, email string, mergeFields map[string]interface{}) MailchimpRequest {
+	// Hash email
+	emailMD5 := fmt.Sprintf("%x", md5.Sum([]byte(email)))
+	// Make request
+	params := map[string]interface{}{
+		"email_address": email,
+		"status":        status.Subscribed,
+		"merge_fields":  mergeFields,
+	}
+
+	return MailchimpRequest{
+		Method: "PUT",
+		Path: fmt.Sprintf("/lists/%s/members/%s", listID, emailMD5),
+		Body: &params,
+	}
 }

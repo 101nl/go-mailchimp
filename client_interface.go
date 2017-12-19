@@ -13,4 +13,5 @@ type ClientInterface interface {
 	RemoveSubscription(listID string, email string, mergeFields map[string]interface{}) (*MemberResponse, error)
 	SetBaseURL(baseURL *url.URL)
 	GetBaseURL() *url.URL
+	CreateMergeField(listID, tag, name, fieldType string, required bool) (error)
 }

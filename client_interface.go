@@ -2,7 +2,6 @@ package mailchimp
 
 import (
 	"net/url"
-	"net/http"
 )
 
 // ClientInterface defines exported methods
@@ -16,5 +15,7 @@ type ClientInterface interface {
 	GetBaseURL() *url.URL
 	CreateMergeField(listID, tag, name, fieldType string, required bool) (error)
 	GetUpdateSubscriptionRequest(listID, email string, mergeFields map[string]interface{}) (MailchimpRequest)
-	ExecuteBatchOperation(b BatchOperation) (*http.Response, error)
+	ExecuteBatchOperation(b BatchOperation) (BatchResponse, error)
+	GetBatchOperationStatus(b BatchResponse) (BatchResponse, error)
+	GetBatchOperationStatusByID(id string) (BatchResponse, error)
 }
